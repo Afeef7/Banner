@@ -1,0 +1,104 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: {userId}
+    // Fields:
+    //   - uid: string (required)
+    //   - email: string (required, email format)
+    //   - displayName: string
+    //   - photoURL: string
+    //   - createdAt: timestamp
+    //
+    // Collection: interviews
+    // Document ID: {interviewId}
+    // Fields:
+    //   - id: string
+    //   - userId: string (required)
+    //   - candidateName: string
+    //   - targetRole: string
+    //   - timestamp: timestamp
+    //   - history: list
+    //   - overallScore: number
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && request.auth.token.email == 'jhonkiladi@gmail.com';
+    }
+
+    function isOwner(userId) {
+      return (isAuthenticated() && (request.auth.uid == userId || isAdmin())) ||
+             userId == 'demo-candidate-123' || userId == 'demo-admin-123';
+    }
+
+    function isDocOwner() {
+      return (isAuthenticated() && (request.auth.uid == resource.data.userId || isAdmin())) ||
+             resource.data.userId == 'demo-candidate-123' || resource.data.userId == 'demo-admin-123';
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+
+    function isValidUser(data) {
+      return hasOnlyAllowedFields(['uid', 'email', 'displayName', 'photoURL', 'createdAt', 'role', 'resume']) &&
+             (data.uid == 'demo-candidate-123' || data.uid == 'demo-admin-123' || (isAuthenticated() && data.uid == request.auth.uid)) &&
+             isValidEmail(data.email);
+    }
+
+    function isValidInterview(data) {
+      return hasOnlyAllowedFields(['id', 'userId', 'candidateName', 'department', 'targetRole', 'overallScore', 'history', 'strengths', 'improvements', 'finalAnalysis', 'liveMetrics', 'timestamp']) &&
+             (data.userId == 'demo-candidate-123' || data.userId == 'demo-admin-123' || (isAuthenticated() && data.userId == request.auth.uid));
+    }
+
+    function isValidLoginActivity(data) {
+      return hasOnlyAllowedFields(['userId', 'email', 'timestamp', 'userAgent', 'ip']) &&
+             (data.userId == 'demo-candidate-123' || data.userId == 'demo-admin-123' || (isAuthenticated() && data.userId == request.auth.uid)) &&
+             isValidEmail(data.email);
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUser(request.resource.data);
+      allow update: if isOwner(userId) && isValidUser(request.resource.data);
+    }
+
+    match /interviews/{interviewId} {
+      allow read: if isDocOwner();
+      allow create: if (isAuthenticated() || request.resource.data.userId == 'demo-candidate-123' || request.resource.data.userId == 'demo-admin-123') && isValidInterview(request.resource.data);
+      allow update: if isDocOwner() && isValidInterview(request.resource.data);
+      allow delete: if isDocOwner();
+    }
+
+    match /login_activities/{activityId} {
+      allow create: if (isAuthenticated() || request.resource.data.userId == 'demo-candidate-123' || request.resource.data.userId == 'demo-admin-123') && isValidLoginActivity(request.resource.data);
+      allow read: if (isAuthenticated() && (request.auth.uid == resource.data.userId || isAdmin())) || resource.data.userId == 'demo-candidate-123' || resource.data.userId == 'demo-admin-123';
+    }
+  }
+}

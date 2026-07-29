@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Custom palette matching a premium, trust-inspiring dark SaaS */
+  --color-brand-bg: #07090e;
+  --color-brand-card: rgba(13, 18, 31, 0.4);
+  --color-brand-border: rgba(255, 255, 255, 0.06);
+  --color-brand-border-active: rgba(139, 92, 246, 0.3);
+  --color-brand-primary: #8b5cf6;
+  --color-brand-primary-hover: #7c3aed;
+  --color-brand-secondary: #6366f1;
+  --color-brand-accent: #f43f5e;
+}
+
+@layer base {
+  body {
+    @apply bg-[#07090e] text-slate-100 antialiased font-sans selection:bg-violet-500/30;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-white/10 rounded-full hover:bg-white/20 transition-colors;
+  }
+}
+
+@layer components {
+  /* Glassmorphism system */
+  .glass {
+    @apply bg-white/[0.04] backdrop-blur-xl border border-white/[0.06] shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_8px_32px_rgba(0,0,0,0.4)] rounded-2xl;
+  }
+  
+  .glass-dark {
+    @apply bg-[#0b0f19]/60 backdrop-blur-2xl border border-white/[0.05] shadow-[inset_0_1px_0_rgba(255,255,255,0.03),0_12px_40px_rgba(0,0,0,0.5)] rounded-2xl;
+  }
+
+  /* Premium Design Cards */
+  .card-premium {
+    @apply bg-[#0d111d]/70 border border-white/[0.06] shadow-[0_4px_20px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.05)] rounded-2xl backdrop-blur-md transition-all duration-200;
+  }
+
+  .card-premium-hover {
+    @apply hover:border-violet-500/30 hover:shadow-[0_4px_30px_rgba(139,92,246,0.08),inset_0_1px_0_rgba(255,255,255,0.08)] hover:-translate-y-0.5 transition-all duration-250;
+  }
+
+  /* Unified Button Hierarchy */
+  .btn-premium-primary {
+    @apply px-4 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white text-xs font-semibold tracking-wider rounded-xl transition-all duration-200 shadow-md hover:shadow-lg hover:shadow-violet-900/20 cursor-pointer flex items-center justify-center gap-2 border border-violet-500/30 active:scale-[0.98] select-none;
+  }
+
+  .btn-premium-secondary {
+    @apply px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/[0.08] text-slate-200 hover:text-white text-xs font-semibold tracking-wider rounded-xl transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 active:scale-[0.98] select-none;
+  }
+
+  .btn-premium-danger {
+    @apply px-4 py-2.5 bg-red-500/10 hover:bg-red-500/20 border border-red-500/25 text-red-200 hover:text-red-100 text-xs font-semibold tracking-wider rounded-xl transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 active:scale-[0.98] select-none;
+  }
+
+  /* Premium Input Fields */
+  .input-premium {
+    @apply w-full px-4 py-3 bg-[#0d111d]/50 border border-white/10 rounded-xl text-slate-200 text-sm placeholder-slate-500 focus:outline-none focus:border-violet-500/50 focus:bg-[#0d111d]/80 transition-all duration-200;
+  }
+
+  /* Elegant Badge/Indicators */
+  .badge-premium {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-violet-500/10 border border-violet-500/20 text-violet-300;
+  }
+
+  .badge-premium-success {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 border border-emerald-500/20 text-emerald-300;
+  }
+
+  .badge-premium-warning {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 border border-amber-500/20 text-amber-300;
+  }
+
+  /* Typography scale classes for easy reuse */
+  .heading-display {
+    @apply font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-tight;
+  }
+
+  .heading-title {
+    @apply font-display text-xl sm:text-2xl font-bold tracking-tight text-white leading-snug;
+  }
+
+  .heading-subtitle {
+    @apply font-display text-base sm:text-lg font-semibold text-slate-200 tracking-wide;
+  }
+
+  .text-body-premium {
+    @apply font-sans text-sm text-slate-300 leading-relaxed;
+  }
+
+  .text-caption-premium {
+    @apply font-sans text-xs font-medium text-slate-400;
+  }
+
+  /* Fluid blob from background layout */
+  .liquid-blob {
+    @apply absolute rounded-[40%_60%_70%_30%_/_40%_50%_60%_50%] animate-[liquid_12s_ease-in-out_infinite_alternate];
+  }
+}
+
+@keyframes liquid {
+  0% {
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+  }
+  34% {
+    border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%;
+  }
+  67% {
+    border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%;
+  }
+  100% {
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Dr. Banner AI",
+  "description": "A professional AI-powered interview simulator for realistic placement prep with real-time video, audio, and actionable performance analytics.",
+  "requestFramePermissions": [
+    "microphone",
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

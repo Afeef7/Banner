@@ -1,0 +1,97 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Stores user information and interview history",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "resume": {
+          "type": "object",
+          "description": "Parsed ATS resume data",
+          "properties": {
+            "score": { "type": "integer" },
+            "fileName": { "type": "string" },
+            "roleAlignment": { "type": "string" },
+            "extractedSkills": { "type": "array", "items": { "type": "string" } },
+            "experience": { "type": "array", "items": { "type": "object" } },
+            "education": { "type": "array", "items": { "type": "object" } },
+            "projects": { "type": "array", "items": { "type": "object" } },
+            "certifications": { "type": "array", "items": { "type": "string" } },
+            "recommendations": { "type": "array", "items": { "type": "object" } },
+            "uploadedAt": { "type": "string", "format": "date-time" }
+          }
+        }
+      },
+      "required": ["uid", "email"]
+    },
+    "InterviewSession": {
+      "title": "Interview Session",
+      "description": "Stores details of a single interview session",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "candidateName": { "type": "string" },
+        "department": { "type": "string" },
+        "targetRole": { "type": "string" },
+        "overallScore": { "type": "number" },
+        "history": { "type": "array", "items": { "type": "object" } },
+        "strengths": { "type": "array", "items": { "type": "string" } },
+        "improvements": { "type": "array", "items": { "type": "string" } },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "finalAnalysis": {
+          "type": "object",
+          "properties": {
+            "summary": { "type": "string" },
+            "technicalReview": { "type": "string" },
+            "communicationReview": { "type": "string" },
+            "confidenceReview": { "type": "string" },
+            "careerFit": { "type": "string" },
+            "suggestedRoles": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "liveMetrics": {
+          "type": "object",
+          "properties": {
+            "confidence": { "type": "number" },
+            "technical": { "type": "number" },
+            "communication": { "type": "number" }
+          }
+        }
+      },
+      "required": ["userId", "timestamp"]
+    },
+    "LoginActivity": {
+      "title": "Login Activity",
+      "description": "Records user login events and metadata",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Firebase Auth UID" },
+        "email": { "type": "string", "format": "email" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "userAgent": { "type": "string" },
+        "ip": { "type": "string" }
+      },
+      "required": ["userId", "email", "timestamp"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profile documents"
+    },
+    "interviews/{interviewId}": {
+      "schema": "InterviewSession",
+      "description": "Interview session records"
+    },
+    "login_activities/{activityId}": {
+      "schema": "LoginActivity",
+      "description": "User login activity records"
+    }
+  }
+}
